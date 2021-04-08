@@ -155,55 +155,55 @@ pub extern "C" fn print_boolean(num8: i8) {
 }
 
 #[no_mangle]
-pub extern "C" fn array_init_int(size: i32) -> *mut Vec<i32> {
+pub extern "C" fn array_init_int(size: i32) -> *mut Vec<*mut i32> {
     let size_t = if size > 0 { size } else { 8 };
     let size_t = size_t as usize;
-    let foo: Box<Vec<i32>> = Box::new(Vec::with_capacity(size_t));
+    let foo: Box<Vec<*mut i32>> = Box::new(Vec::with_capacity(size_t));
     let vec_pointer = Box::into_raw(foo);
-    return vec_pointer as *mut Vec<i32>;
+    return vec_pointer as *mut Vec<*mut i32>;
 }
 
 #[no_mangle]
-pub extern "C" fn array_init_float(size: i32) -> *mut Vec<f32> {
+pub extern "C" fn array_init_float(size: i32) -> *mut Vec<*mut f32> {
     let size_t = if size > 0 { size } else { 8 };
     let size_t = size_t as usize;
-    let foo: Box<Vec<f32>> = Box::new(Vec::with_capacity(size_t));
+    let foo: Box<Vec<*mut f32>> = Box::new(Vec::with_capacity(size_t));
     let vec_pointer = Box::into_raw(foo);
-    return vec_pointer as *mut Vec<f32>;
+    return vec_pointer as *mut Vec<*mut f32>;
 }
 
 #[no_mangle]
-pub extern "C" fn array_init_bool(size: i32) -> *mut Vec<bool> {
+pub extern "C" fn array_init_bool(size: i32) -> *mut Vec<*mut bool> {
     let size_t = if size > 0 { size } else { 8 };
     let size_t = size_t as usize;
-    let foo: Box<Vec<bool>> = Box::new(Vec::with_capacity(size_t));
+    let foo: Box<Vec<*mut bool>> = Box::new(Vec::with_capacity(size_t));
     let vec_pointer = Box::into_raw(foo);
-    return vec_pointer as *mut Vec<bool>;
+    return vec_pointer as *mut Vec<*mut bool>;
 }
 
 #[no_mangle]
-pub extern "C" fn array_init_string(size: i32) -> *mut Vec<*mut BString> {
+pub extern "C" fn array_init_string(size: i32) -> *mut Vec<*mut String> {
     let size_t = if size > 0 { size } else { 8 };
     let size_t = size_t as usize;
-    let foo: Box<Vec<*mut BString>> = Box::new(Vec::with_capacity(size_t));
+    let foo: Box<Vec<*mut String>> = Box::new(Vec::with_capacity(size_t));
     let vec_pointer = Box::into_raw(foo);
-    return vec_pointer as *mut Vec<*mut BString>;
+    return vec_pointer as *mut Vec<*mut String>;
 }
 
 #[no_mangle]
-pub extern "C" fn array_store_int(arr_ptr: *mut Vec<i32>, index: i32, ref_ptr: i32) {
+pub extern "C" fn array_store_int(arr_ptr: *mut Vec<*mut i32>, index: i32, ref_ptr: *mut i32) {
     let mut arr = unsafe { Box::from_raw(arr_ptr) };
     let index_n = index as usize;
     let len = index_n + 1;
     if arr.len() < len {
-        arr.resize(len, 0);
+        arr.resize(len, 0 as *mut i32);
     }
     arr[index_n] = ref_ptr;
     mem::forget(arr);
 }
 
 #[no_mangle]
-pub extern "C" fn array_load_int(arr_ptr: *mut Vec<i32>, index: i32) -> i32 {
+pub extern "C" fn array_load_int(arr_ptr: *mut Vec<*mut i32>, index: i32) -> *mut i32 {
     let arr = unsafe { Box::from_raw(arr_ptr) };
     let index_n = index as usize;
     // check the out of bounds.
@@ -214,19 +214,19 @@ pub extern "C" fn array_load_int(arr_ptr: *mut Vec<i32>, index: i32) -> i32 {
 }
 
 #[no_mangle]
-pub extern "C" fn array_store_float(arr_ptr: *mut Vec<f32>, index: i32, ref_ptr: f32) {
+pub extern "C" fn array_store_float(arr_ptr: *mut Vec<*mut f32>, index: i32, ref_ptr: *mut f32) {
     let mut arr = unsafe { Box::from_raw(arr_ptr) };
     let index_n = index as usize;
     let len = index_n + 1;
     if arr.len() < len {
-        arr.resize(len, 0.0);
+        arr.resize(len, 0 as *mut f32);
     }
     arr[index_n] = ref_ptr;
     mem::forget(arr);
 }
 
 #[no_mangle]
-pub extern "C" fn array_load_float(arr_ptr: *mut Vec<f32>, index: i32) -> f32 {
+pub extern "C" fn array_load_float(arr_ptr: *mut Vec<*mut f32>, index: i32) -> *mut f32 {
     let arr = unsafe { Box::from_raw(arr_ptr)};
     let index_n = index as usize;
     // check the out of bounds.
@@ -237,19 +237,19 @@ pub extern "C" fn array_load_float(arr_ptr: *mut Vec<f32>, index: i32) -> f32 {
 }
 
 #[no_mangle]
-pub extern "C" fn array_store_bool(arr_ptr: *mut Vec<bool>, index: i32, ref_ptr: bool) {
+pub extern "C" fn array_store_bool(arr_ptr: *mut Vec<*mut bool>, index: i32, ref_ptr: *mut bool) {
     let mut arr = unsafe { Box::from_raw(arr_ptr) };
     let index_n = index as usize;
     let len = index_n + 1;
     if arr.len() < len {
-        arr.resize(len, false);
+        arr.resize(len, 0 as *mut bool);
     }
     arr[index_n] = ref_ptr;
     mem::forget(arr);
 }
 
 #[no_mangle]
-pub extern "C" fn array_load_bool(arr_ptr: *mut Vec<bool>, index: i32) -> bool {
+pub extern "C" fn array_load_bool(arr_ptr: *mut Vec<*mut bool>, index: i32) -> *mut bool {
     let arr = unsafe { Box::from_raw(arr_ptr)};
     let index_n = index as usize;
     // check the out of bounds.
@@ -260,23 +260,19 @@ pub extern "C" fn array_load_bool(arr_ptr: *mut Vec<bool>, index: i32) -> bool {
 }
 
 #[no_mangle]
-pub extern "C" fn array_store_string(arr_ptr: *mut Vec<*mut BString>, index: i32, ref_ptr: *mut BString) {
+pub extern "C" fn array_store_string(arr_ptr: *mut Vec<*mut String>, index: i32, ref_ptr: *mut String) {
     let mut arr = unsafe { Box::from_raw(arr_ptr) };
     let index_n = index as usize;
     let len = index_n + 1;
-    let emptystr = BString {
-        value: "",
-    };
-    let emptystr_ptr = Box::into_raw(Box::new(emptystr));
     if arr.len() < len {
-        arr.resize(len, emptystr_ptr as *mut BString);
+        arr.resize(len, 0 as *mut String);
     }
     arr[index_n] = ref_ptr;
     mem::forget(arr);
 }
 
 #[no_mangle]
-pub extern "C" fn array_load_string(arr_ptr: *mut Vec<*mut BString>, index: i32) -> *mut BString {
+pub extern "C" fn array_load_string(arr_ptr: *mut Vec<*mut String>, index: i32) -> *mut String {
     let arr = unsafe { Box::from_raw(arr_ptr)};
     let index_n = index as usize;
     // check the out of bounds.
@@ -287,7 +283,7 @@ pub extern "C" fn array_load_string(arr_ptr: *mut Vec<*mut BString>, index: i32)
 }
 
 #[no_mangle]
-pub extern "C" fn array_deinit_int(ptr: *mut Vec<i32>) {
+pub extern "C" fn array_deinit_int(ptr: *mut Vec<*mut i32>) {
     if ptr.is_null() {
         return;
     }
@@ -297,7 +293,7 @@ pub extern "C" fn array_deinit_int(ptr: *mut Vec<i32>) {
 }
 
 #[no_mangle]
-pub extern "C" fn array_deinit_float(ptr: *mut Vec<f32>) {
+pub extern "C" fn array_deinit_float(ptr: *mut Vec<*mut f32>) {
     if ptr.is_null() {
         return;
     }
@@ -307,7 +303,7 @@ pub extern "C" fn array_deinit_float(ptr: *mut Vec<f32>) {
 }
 
 #[no_mangle]
-pub extern "C" fn array_deinit_bool(ptr: *mut Vec<bool>) {
+pub extern "C" fn array_deinit_bool(ptr: *mut Vec<*mut bool>) {
     if ptr.is_null() {
         return;
     }
@@ -317,7 +313,7 @@ pub extern "C" fn array_deinit_bool(ptr: *mut Vec<bool>) {
 }
 
 #[no_mangle]
-pub extern "C" fn array_deinit_string(ptr: *mut Vec<*mut BString>) {
+pub extern "C" fn array_deinit_string(ptr: *mut Vec<*mut String>) {
     if ptr.is_null() {
         return;
     }
@@ -343,56 +339,23 @@ pub extern "C" fn map_deint_int(ptr: *mut BalMapInt) {
 }
 
 #[no_mangle]
-pub extern "C" fn map_store_int(ptr: *mut BalMapInt, key: *mut BString, member: i32) {
+pub extern "C" fn map_store_int(ptr: *mut BalMapInt, key: *const c_char, member_ptr: *const i32) {
     // Load BalMap from pointer
     assert!(!ptr.is_null());
     let bal_map = unsafe { &mut *ptr };
     // Load Key C string
     assert!(!key.is_null());
-    let key_str = unsafe { (*key).value };
+    let key = unsafe { CStr::from_ptr(key) };
+    let key_str = key.to_str().unwrap();
+
+    // Load member value
+    assert!(!member_ptr.is_null());
+    let member = unsafe { slice::from_raw_parts(member_ptr, 1) };
     // Insert new field
-    bal_map.insert(key_str, member);
-}
+    bal_map.insert(key_str, member[0]);
 
-#[no_mangle]
-pub extern "C" fn map_load_int(
-    ptr: *mut BalMapInt,
-    key: *mut BString,
-    output_val: *mut i32,
-) -> bool {
-    // Load BalMap from pointer
-    assert!(!ptr.is_null());
-    let bal_map = unsafe { &mut *ptr };
-
-    // Load Key C string
-    assert!(!key.is_null());
-    let key_str = unsafe { (*key).value };
-
-    // Output param
-    assert!(!output_val.is_null());
-
-    match bal_map.get(key_str) {
-        Some(val) => {
-            unsafe { *output_val = *val };
-            true
-        }
-        None => {
-            panic!("Invalid map key access")
-            //false,
-        }
-    }
-}
-
-#[no_mangle]
-pub extern "C" fn map_spread_field_init(ptr_source: *mut BalMapInt, ptr_expr: *mut BalMapInt) {
-    // Load source BalMap from pointer
-    assert!(!ptr_source.is_null());
-    let map_src = unsafe { &mut *ptr_source };
-    // Load expr BalMap from pointer
-    assert!(!ptr_expr.is_null());
-    let map_expr = unsafe { &mut *ptr_expr };
-    // Insert from spread field expression
-    map_src.insert_spread_field(map_expr);
+    // Print length to test functionality
+    println!("length={}", bal_map.length());
 }
 
 #[no_mangle]
@@ -438,4 +401,19 @@ pub extern "C" fn unbox_bal_bool(ptr: *mut f64) {
     unsafe {
         Box::from_raw(ptr);
     }
+}
+
+#[no_mangle]
+pub extern "C" fn map_spread_field_init(ptr_source: *mut BalMapInt, ptr_expr: *mut BalMapInt) {
+    // Load source BalMap from pointer
+    assert!(!ptr_source.is_null());
+    let map_src = unsafe { &mut *ptr_source };
+    // Load expr BalMap from pointer
+    assert!(!ptr_expr.is_null());
+    let map_expr = unsafe { &mut *ptr_expr };
+    // Insert from spread field expression
+    map_src.insert_spread_field(map_expr);
+
+    // Print length to test functionality
+    println!("length={}", map_src.length());
 }

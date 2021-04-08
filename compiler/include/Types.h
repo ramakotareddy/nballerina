@@ -108,7 +108,6 @@ class Type {
     const std::string &getName() const;
     static std::string getNameOfType(TypeTag typeTag);
     TypeTag getMemberTypeTag() const;
-    static std::string_view typeStringMangleName(const Type &type);
 };
 
 } // namespace nballerina

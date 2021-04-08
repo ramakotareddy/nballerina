@@ -76,8 +76,6 @@ class BIRReader {
     uint16_t readS2be();
     uint32_t readS4be();
     uint64_t readS8be();
-    double readS8bef();
-    constexpr bool isLittleEndian();
     static bool ignoreFunction(std::string funcName);
 
   public:
@@ -120,7 +118,6 @@ class BIRReader {
     friend class ReadArrayStoreInsn;
     friend class ReadArrayLoadInsn;
     friend class ReadMapStoreInsn;
-    friend class ReadMapLoadInsn;
 };
 
 class ConstantPoolEntry {
@@ -316,8 +313,8 @@ class ConstantPoolSet {
     ConstantPoolEntry *getEntry(int index) { return poolEntries[index].get(); }
     std::string getStringCp(uint32_t index);
     uint32_t getIntCp(uint32_t index);
-    float getFloatCp(uint32_t index);
     nballerina::Type getTypeCp(uint32_t index, bool voidToInt);
+    float getFloatCp(uint32_t index);
     bool getBooleanCp(uint32_t index);
     nballerina::TypeTag getTypeTag(uint32_t index);
     nballerina::InvocableType getInvocableType(uint32_t index);
@@ -470,14 +467,6 @@ class ReadMapStoreInsn : public ReadNonTerminatorInstruction {
     static ReadMapStoreInsn readMapStoreInsn;
     ~ReadMapStoreInsn() {}
     std::unique_ptr<nballerina::MapStoreInsn> readNonTerminatorInsn(std::shared_ptr<nballerina::BasicBlock> currentBB);
-};
-
-class ReadMapLoadInsn : public ReadNonTerminatorInstruction {
-  public:
-    ReadMapLoadInsn() {}
-    static ReadMapLoadInsn readMapLoadInsn;
-    ~ReadMapLoadInsn() {}
-    std::unique_ptr<nballerina::MapLoadInsn> readNonTerminatorInsn(std::shared_ptr<nballerina::BasicBlock> currentBB);
 };
 
 #endif // BIRREADER_H

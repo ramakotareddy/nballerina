@@ -61,8 +61,6 @@ class Function : public Debuggable, public Translatable {
     std::shared_ptr<BasicBlock> FindBasicBlock(const std::string &id);
     LLVMValueRef generateAbortInsn(LLVMModuleRef &modRef);
     void splitBBIfPossible(LLVMModuleRef &modRef);
-    static bool isBoxValueSupport(TypeTag typeTag);
-    LLVMValueRef generateBoxValueFunc(LLVMModuleRef &modRef, LLVMTypeRef paramTypeRef, TypeTag typeTag);
 
   public:
     Function() = delete;
@@ -100,8 +98,6 @@ class Function : public Debuggable, public Translatable {
     void insertBranchComparisonValue(const std::string &lhsName, LLVMValueRef compRef);
     void setLLVMBuilder(LLVMBuilderRef builder);
     void setLLVMFunctionValue(LLVMValueRef funcRef);
-    void storeValueInSmartStruct(LLVMModuleRef &modRef, LLVMValueRef value, const Type &valueType,
-                                 LLVMValueRef smartStruct);
 
     void translate(LLVMModuleRef &modRef) final;
 };

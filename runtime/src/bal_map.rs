@@ -12,8 +12,8 @@ pub mod map {
             }
         }
         // Map get
-        pub fn get(&self, key: &str) -> Option<&i32> {
-            self.map.get(key)
+        pub fn get(&self, key: &str) -> i32 {
+            self.map.get(key).cloned().unwrap_or(0)
         }
         // Map insert
         pub fn insert(&mut self, key: &str, member: i32) {

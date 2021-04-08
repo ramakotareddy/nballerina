@@ -1,4 +1,4 @@
-// RUN: "%testRunScript" %s %nballerinacc "%java_path" "%skip_bir_gen" | filecheck %s
+// RUN: "%testRunScript" %s %nballerinacc "%java_path" | filecheck %s
 
 public function print_string(string val) = external;
 
